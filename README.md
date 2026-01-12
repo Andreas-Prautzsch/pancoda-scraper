@@ -163,6 +163,7 @@ Attributwert eines Elements.
 ```
 
 ## Beispiel-Request
+Endpoint ist `POST /parse`.
 
 ```json
 {
