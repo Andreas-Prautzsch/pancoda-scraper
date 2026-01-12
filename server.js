@@ -71,12 +71,12 @@ function execSelect({ $, vars, spec, mode }) {
   }
 
   // mode all
-  let out = filtered.map(mapper);
+  let pairs = filtered.map((node) => ({ node, row: mapper(node) }));
 
   // optional post filters (very small feature set)
   if (spec.post?.notEmpty) {
     const fields = Array.isArray(spec.post.notEmpty) ? spec.post.notEmpty : [spec.post.notEmpty];
-    return out.filter((row) => fields.every((f) => row?.[f] != null && String(row[f]).trim() !== ""));
+    pairs = pairs.filter(({ row }) => fields.every((f) => row?.[f] != null && String(row[f]).trim() !== ""));
   }
 
   if (spec.post?.exclude) {
@@ -85,11 +85,11 @@ function execSelect({ $, vars, spec, mode }) {
     if (selector) {
       const selectors = Array.isArray(selector) ? selector : [selector];
       const matchesSelector = (node, sel) => node.is(sel) || node.find(sel).length > 0;
-      out = out.filter((_, index) => selectors.every((sel) => !matchesSelector(filtered[index], sel)));
+      pairs = pairs.filter(({ node }) => selectors.every((sel) => !matchesSelector(node, sel)));
     }
     if (field && Array.isArray(values)) {
       const set = new Set(values);
-      out = out.filter((row) => !set.has(row?.[field]));
+      pairs = pairs.filter(({ row }) => !set.has(row?.[field]));
     }
   }
 
@@ -99,10 +99,10 @@ function execSelect({ $, vars, spec, mode }) {
     const tail = Number(spec.post.drop.tail || 0);
     const start = Number.isFinite(head) && head > 0 ? head : 0;
     const end = Number.isFinite(tail) && tail > 0 ? -tail : undefined;
-    out = end === undefined ? out.slice(start) : out.slice(start, end);
+    pairs = end === undefined ? pairs.slice(start) : pairs.slice(start, end);
   }
 
-  return out;
+  return pairs.map(({ row }) => row);
 }
 
 function evalWhere({ $, vars, node, where }) {
