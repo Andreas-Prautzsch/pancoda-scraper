@@ -34,11 +34,23 @@ app.post("/parse", (req, res) => {
 });
 
 function runTemplate({ $, vars, template }) {
-  // template supports: { selectOne: {...} } or { selectAll: {...} }
+  if (template.selects) {
+    const out = {};
+    for (const [key, spec] of Object.entries(template.selects)) {
+      if (spec.type === "selectAll") {
+        out[key] = execSelect({ $, vars, spec, mode: "all" });
+      } else if (spec.type === "selectOne") {
+        out[key] = execSelect({ $, vars, spec, mode: "one" });
+      }
+    }
+    return out;
+  }
+
+  // backward compatibility
   if (template.selectOne) return execSelect({ $, vars, spec: template.selectOne, mode: "one" });
   if (template.selectAll) return execSelect({ $, vars, spec: template.selectAll, mode: "all" });
 
-  throw new Error("template must include selectOne or selectAll");
+  throw new Error("template invalid");
 }
 
 function execSelect({ $, vars, spec, mode }) {
