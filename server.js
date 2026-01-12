@@ -71,7 +71,7 @@ function execSelect({ $, vars, spec, mode }) {
   }
 
   // mode all
-  const out = filtered.map(mapper);
+  let out = filtered.map(mapper);
 
   // optional post filters (very small feature set)
   if (spec.post?.notEmpty) {
@@ -80,12 +80,24 @@ function execSelect({ $, vars, spec, mode }) {
   }
 
   if (spec.post?.exclude) {
-    // exclude: { field: "label", values: ["Hersteller:"] }
-    const { field, values } = spec.post.exclude || {};
+    // exclude: { field: "label", values: ["Hersteller:"] } or { selector: ".--active-link" }
+    const { field, values, selector } = spec.post.exclude || {};
+    if (selector) {
+      out = out.filter((_, index) => filtered[index].find(selector).length === 0);
+    }
     if (field && Array.isArray(values)) {
       const set = new Set(values);
-      return out.filter((row) => !set.has(row?.[field]));
+      out = out.filter((row) => !set.has(row?.[field]));
     }
+  }
+
+  if (spec.post?.drop) {
+    // drop: { head: 1, tail: 1 }
+    const head = Number(spec.post.drop.head || 0);
+    const tail = Number(spec.post.drop.tail || 0);
+    const start = Number.isFinite(head) && head > 0 ? head : 0;
+    const end = Number.isFinite(tail) && tail > 0 ? -tail : undefined;
+    out = end === undefined ? out.slice(start) : out.slice(start, end);
   }
 
   return out;

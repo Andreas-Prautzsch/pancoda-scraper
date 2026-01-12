@@ -66,7 +66,7 @@ Entfernt Einträge, bei denen bestimmte Felder leer sind.
 ```
 
 #### `post.exclude`
-Schließt Einträge aus, wenn ein Feld einen bestimmten Wert hat.
+Schließt Einträge aus, wenn ein Feld einen bestimmten Wert hat oder ein Selector matcht.
 
 ```json
 {
@@ -76,6 +76,24 @@ Schließt Einträge aus, wenn ein Feld einen bestimmten Wert hat.
 }
 ```
 
+```json
+{
+  "post": {
+    "exclude": { "selector": ".--active-link" }
+  }
+}
+```
+
+#### `post.drop`
+Ignoriert eine Anzahl von Einträgen am Anfang und/oder Ende.
+
+```json
+{
+  "post": {
+    "drop": { "head": 1, "tail": 1 }
+  }
+}
+```
 ## Expressions (Funktionen) in `return` / `where`
 
 ### `var`
