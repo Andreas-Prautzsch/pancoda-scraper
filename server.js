@@ -84,7 +84,8 @@ function execSelect({ $, vars, spec, mode }) {
     const { field, values, selector } = spec.post.exclude || {};
     if (selector) {
       const selectors = Array.isArray(selector) ? selector : [selector];
-      out = out.filter((_, index) => selectors.every((sel) => filtered[index].find(sel).length === 0));
+      const matchesSelector = (node, sel) => node.is(sel) || node.find(sel).length > 0;
+      out = out.filter((_, index) => selectors.every((sel) => !matchesSelector(filtered[index], sel)));
     }
     if (field && Array.isArray(values)) {
       const set = new Set(values);

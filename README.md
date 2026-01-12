@@ -67,6 +67,7 @@ Entfernt Einträge, bei denen bestimmte Felder leer sind.
 
 #### `post.exclude`
 Schließt Einträge aus, wenn ein Feld einen bestimmten Wert hat oder ein Selector matcht.
+Der Selector prüft das Element selbst **und** dessen Nachfahren.
 
 ```json
 {
