@@ -97,7 +97,8 @@ Ignoriert eine Anzahl von Einträgen am Anfang und/oder Ende.
 ## Expressions (Funktionen) in `return` / `where`
 
 ### `var`
-Liest Variablen aus dem Request (`vars`).
+Liest Variablen aus dem Request (`vars`). Damit kannst du Werte von außen einfließen lassen,
+z. B. zum Vergleichen in `where`, zum Ergänzen von Feldern oder um Labels/IDs direkt zu setzen.
 
 ```json
 { "var": "expected" }
