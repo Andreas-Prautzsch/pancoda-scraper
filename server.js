@@ -83,7 +83,8 @@ function execSelect({ $, vars, spec, mode }) {
     // exclude: { field: "label", values: ["Hersteller:"] } or { selector: ".--active-link" }
     const { field, values, selector } = spec.post.exclude || {};
     if (selector) {
-      out = out.filter((_, index) => filtered[index].find(selector).length === 0);
+      const selectors = Array.isArray(selector) ? selector : [selector];
+      out = out.filter((_, index) => selectors.every((sel) => filtered[index].find(sel).length === 0));
     }
     if (field && Array.isArray(values)) {
       const set = new Set(values);

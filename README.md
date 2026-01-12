@@ -84,6 +84,14 @@ Schließt Einträge aus, wenn ein Feld einen bestimmten Wert hat oder ein Select
 }
 ```
 
+```json
+{
+  "post": {
+    "exclude": { "selector": [".--active", ".--placeholder"] }
+  }
+}
+```
+
 #### `post.drop`
 Ignoriert eine Anzahl von Einträgen am Anfang und/oder Ende.
 
@@ -322,4 +330,3 @@ Attributwert eines Elements.
   }
 }
 ```
-
